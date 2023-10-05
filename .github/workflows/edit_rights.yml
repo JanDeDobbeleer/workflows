@@ -9,10 +9,6 @@ on:
     types:
       - opened
   workflow_call:
-    inputs:
-      repo_name:
-        required: true
-        type: string
 
 permissions:
   pull-requests: write
@@ -21,6 +17,10 @@ jobs:
   notify-when-maintainers-cannot-edit:
     runs-on: ubuntu-latest
     steps:
+      - id: repo-basename
+        shell: bash
+        run: |
+          echo "GITHUB_REPOSITORY_MAME=$(basename ${{ github.repository }})" >> $GITHUB_ENV
       - uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
           github-token: ${{ secrets.GH_PAT }}
@@ -42,7 +42,7 @@ jobs:
             const variables = { number: pullNumber };
 
             try {
-              console.log(`Check JanDeDobbeleer/${{ inputs.repo_name }}#${pullNumber} for maintainer edit access ...`);
+              console.log(`Check JanDeDobbeleer/${process.env.GITHUB_REPOSITORY_MAME}#${pullNumber} for maintainer edit access ...`);
               const result = await github.graphql(query, variables);
 
               console.log(JSON.stringify(result, null, 2));
@@ -60,7 +60,7 @@ jobs:
                 await github.rest.issues.createComment({
                   issue_number: pullNumber,
                   owner: process.env.GITHUB_REPOSITORY_OWNER,
-                  repo: '${{ inputs.repo_name }}',
+                  repo: process.env.GITHUB_REPOSITORY_MAME,
                   body: "Thanks for submitting a PR to the project!\n\nIn order to review and merge PRs most efficiently, we require that all PRs grant maintainer edit access before we review them. For information on how to do this, [see the documentation](https://docs.github.com/en/github/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork)."
                 });
               }
