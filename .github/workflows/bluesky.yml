@@ -14,6 +14,10 @@ on:
         description: 'Post title'
         required: true
         type: string
+      token:
+        type: string
+        description: 'GitHub token'
+        required: true
 
 jobs:
   bluesky:
@@ -26,7 +30,7 @@ jobs:
       - name: Skyt 🌤️
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ inputs.token }}
           script: |
             const { BskyAgent } = require('@atproto/api');
             const { Octokit } = require("@octokit/rest");
