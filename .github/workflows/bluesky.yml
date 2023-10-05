@@ -10,16 +10,8 @@ on:
         description: 'Bluesky password'
         required: true
         type: string
-      repo:
-        description: 'Repository name'
-        required: true
-        type: string
       title:
         description: 'Post title'
-        required: true
-        type: string
-      tags:
-        description: 'Post tags'
         required: true
         type: string
 
@@ -27,6 +19,10 @@ jobs:
   bluesky:
     runs-on: ubuntu-latest
     steps:
+      - id: repo-basename
+        shell: bash
+        run: |
+          echo "GITHUB_REPOSITORY_MAME=$(basename ${{ github.repository }})" >> $GITHUB_ENV
       - name: Skyt 🌤️
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
@@ -39,7 +35,7 @@ jobs:
               const github = new Octokit();
               const response = await github.rest.repos.getLatestRelease({
                 owner: process.env.GITHUB_REPOSITORY_OWNER,
-                repo: ${{ inputs.repo }},
+                repo: process.env.GITHUB_REPOSITORY_MAME,
               });
               const release = response.data;
 
@@ -61,7 +57,7 @@ jobs:
 
             ${notes}
 
-            ${{ inputs.tags }}}`;
+            #${process.env.GITHUB_REPOSITORY_MAME} #oss #cli #opensource`;
 
               console.log(`Posting to Bluesky:\n\n${text}`);
 
@@ -70,7 +66,7 @@ jobs:
                 embed: {
                   $type: 'app.bsky.embed.external',
                   external: {
-                    uri: `https://github.com/${process.env.GITHUB_REPOSITORY_OWNER}/${{ inputs.repo }}/releases/tag/${version}`,
+                    uri: `https://github.com/${process.env.GITHUB_REPOSITORY_OWNER}/${process.env.GITHUB_REPOSITORY_MAME}/releases/tag/${version}`,
                     title: "${{ inputs.title }}",
                     description: version,
                   },
