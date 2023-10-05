@@ -1,23 +1,21 @@
 name: Bluesky
 on:
   workflow_call:
-    inputs:
+    secrets:
       identifier:
         description: 'Bluesky identifier'
         required: true
-        type: string
       password:
         description: 'Bluesky password'
         required: true
-        type: string
+      token:
+        description: 'GitHub token'
+        required: true
+    inputs:
       title:
         description: 'Post title'
         required: true
         type: string
-      token:
-        type: string
-        description: 'GitHub token'
-        required: true
 
 jobs:
   bluesky:
@@ -30,7 +28,7 @@ jobs:
       - name: Skyt 🌤️
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
-          github-token: ${{ inputs.token }}
+          github-token: ${{ secrets.token }}
           script: |
             const { BskyAgent } = require('@atproto/api');
             const { Octokit } = require("@octokit/rest");
@@ -53,7 +51,7 @@ jobs:
               notes = notes.substring(0, 249);
 
               const agent = new BskyAgent({ service: 'https://bsky.social' });
-              await agent.login({ identifier: ${{ inputs.identifier }}, password: ${{ inputs.password }} });
+              await agent.login({ identifier: ${{ secrets.identifier }}, password: ${{ secrets.password }} });
 
               const version = release.name;
 

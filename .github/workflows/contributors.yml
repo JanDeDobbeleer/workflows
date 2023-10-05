@@ -1,9 +1,8 @@
 name: Contributors
 on:
   workflow_call:
-    inputs:
+    secrets:
       token:
-        type: string
         description: 'GitHub token'
         required: true
 
@@ -17,7 +16,7 @@ jobs:
       - name: Check and comment 👩🏾‍💻
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
-          github-token: ${{ inputs.token }}
+          github-token: ${{ secrets.token }}
           script: |
             const fs = require('fs');
             const { repo: { owner, repo } } = context;
