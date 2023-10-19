@@ -1,5 +1,10 @@
 name: Discord
-on: [workflow_call]
+on:
+  workflow_call:
+    secrets:
+      webhook:
+        description: 'Discord webhook'
+        required: true
 
 jobs:
   notify:
@@ -9,21 +14,24 @@ jobs:
         id: notes
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
-          result-encoding: string
           script: |
+            const axios = require('axios');
+
             notes = context.payload.release.body
 
             // replace all non-supported characters
             notes = notes.replaceAll('###', '')
             notes = notes.trim()
-            return notes
-      - name: Changelog 📝
-        uses: sebastianpopp/discord-action@4f2d5417bc61a79593304a62e71cd32427c17790
-        with:
-          webhook: ${{ secrets.CHANGELOG_WEBHOOK }}
-          message: |
-            📦 ${{ github.event.release.name }}
 
-            ${{steps.notes.outputs.result}}
+            const options = {
+              method: 'POST',
+              url: ${{ secrets.webhook }},
+              headers: {'Content-Type': 'application/json'},
+              data: {content: notes}
+            };
 
-            ${{ github.event.release.html_url }}
+            axios
+              .request(options)
+              .then(() => {
+                core.info('Message was sent successfully');
+            });
