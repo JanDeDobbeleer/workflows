@@ -31,7 +31,7 @@ jobs:
           script: |
             const query = `
               query($number: Int!) {
-                repository(owner: process.env.GITHUB_REPOSITORY_OWNER, name: process.env.GITHUB_REPOSITORY_OWNER) {
+                repository(owner: ${process.env.GITHUB_REPOSITORY_OWNER}, name: ${process.env.GITHUB_REPOSITORY_OWNER}) {
                   pullRequest(number: $number) {
                     headRepositoryOwner {
                       login
