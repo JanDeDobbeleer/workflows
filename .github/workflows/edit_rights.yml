@@ -9,6 +9,10 @@ on:
     types:
       - opened
   workflow_call:
+    secrets:
+      token:
+        description: 'GitHub token'
+        required: true
 
 permissions:
   pull-requests: write
@@ -23,7 +27,7 @@ jobs:
           echo "GITHUB_REPOSITORY_MAME=$(basename ${{ github.repository }})" >> $GITHUB_ENV
       - uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
-          github-token: ${{ secrets.GH_PAT }}
+          github-token: ${{ secrets.token }}
           script: |
             const query = `
               query($number: Int!) {
