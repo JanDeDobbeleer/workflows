@@ -25,13 +25,13 @@ jobs:
 
             const options = {
               method: 'POST',
-              url: ${{ secrets.webhook }},
-              headers: {'Content-Type': 'application/json'},
-              data: {content: notes}
+              url: "${{ secrets.webhook }}",
+              headers: { 'Content-Type': 'application/json' },
+              data: { content: notes }
             };
 
             axios
               .request(options)
               .then(() => {
                 core.info('Message was sent successfully');
-            });
+              });
