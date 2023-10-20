@@ -37,6 +37,8 @@ jobs:
           script: |
             const { BskyAgent } = require('@atproto/api');
 
+            BskyAgent.configure({ fetch: fetch });
+
             (async function main() {
               const response = await github.rest.repos.getLatestRelease({
                 owner: process.env.GITHUB_REPOSITORY_OWNER,
