@@ -10,6 +10,8 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65
+      - run: npm install axios
       - name: Notes 📝
         id: notes
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
